@@ -7,6 +7,17 @@ CodeiQ connects **GitHub** repositories with **Gemini 1.5 API** to provide code 
 - **Code Analysis**: Get real-time feedback and error detection.
 - **Gemini API**: Leverages the **Gemini 1.5 API** to provide deep, context-aware insights and explanations of your code.
 
+## **Demo**
+
+- The application provides a live demo of its functionality. You can explore its features on the following demo platforms:
+  - [Demo CodeiQ (Web)](https://democodeiq.dora.run/)
+  - [CodeiQ on Vercel](https://npqbbkp735sfoee5egtbfqww7v6n0pst.vercel.app/)
+  - [CodeiQ Showcase](https://baptistamerlin.wixstudio.com/codeiq)
+
+For a detailed walkthrough of how the app works, check out the [YouTube Demo Video](https://youtu.be/NE7MWEBtlmw) for additional clarifications.
+
+---
+
 ## **Setup Instructions**
 
 ### 1. **Clone the Repository**
@@ -78,10 +89,10 @@ This project is licensed under the MIT License.
 ---
 
 ## **Links**
-- **YouTube Video**: https://youtu.be/NE7MWEBtlmw
+- **YouTube Video**: [https://youtu.be/NE7MWEBtlmw](https://youtu.be/NE7MWEBtlmw)
 - **Website**:
-- https://npqbbkp735sfoee5egtbfqww7v6n0pst.vercel.app/
-- https://democodeiq.dora.run/
-- https://baptistamerlin.wixstudio.com/codeiq
+  - [CodeiQ on Vercel](https://npqbbkp735sfoee5egtbfqww7v6n0pst.vercel.app/)
+  - [Demo CodeiQ (Web)](https://democodeiq.dora.run/)
+  - [CodeiQ Showcase](https://baptistamerlin.wixstudio.com/codeiq)
 
 ---
