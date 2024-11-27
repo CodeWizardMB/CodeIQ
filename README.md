@@ -79,6 +79,9 @@ This project is licensed under the MIT License.
 
 ## **Links**
 - **YouTube Video**: [Link to Video] 
-- **Website**: https://npqbbkp735sfoee5egtbfqww7v6n0pst.vercel.app/
+- **Website**:
+- https://npqbbkp735sfoee5egtbfqww7v6n0pst.vercel.app/
+- https://democodeiq.dora.run/
+- https://baptistamerlin.wixstudio.com/codeiq
 
 ---
