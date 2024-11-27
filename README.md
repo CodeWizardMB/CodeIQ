@@ -78,7 +78,7 @@ This project is licensed under the MIT License.
 ---
 
 ## **Links**
-- **YouTube Video**: [Link to Video] 
+- **YouTube Video**: https://youtu.be/NE7MWEBtlmw
 - **Website**:
 - https://npqbbkp735sfoee5egtbfqww7v6n0pst.vercel.app/
 - https://democodeiq.dora.run/
