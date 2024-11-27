@@ -6,8 +6,8 @@ import requests
 
 # Load .env variables
 load_dotenv()
-GITHUB_TOKEN = "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"
-API_KEY = "AIzaSyBKsBD_gUqp90DbOvW9j_66oyQK-XeoBeY"
+GITHUB_TOKEN = "your_github_token"
+API_KEY = "your_gemini_api"
 
 # Configure API
 genai.configure(api_key=API_KEY)
