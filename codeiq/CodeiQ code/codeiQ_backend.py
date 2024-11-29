@@ -1,58 +1,76 @@
 import os
-import gradio as gr
 import google.generativeai as genai
-from dotenv import load_dotenv
 import requests
+from dotenv import load_dotenv
 
-# Load .env variables
+# Load environment variables
 load_dotenv()
-GITHUB_TOKEN = "your_github_token"
-API_KEY = "your_gemini_api"
 
-# Configure API
-genai.configure(api_key=API_KEY)
-model = genai.models.list_models()[0]  # Ensure model availability
+# Configure Gemini API
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+if not GEMINI_API_KEY:
+    raise ValueError("GEMINI_API_KEY is not set. Please configure your environment variables.")
+genai.configure(api_key=GEMINI_API_KEY)
+
+# GitHub Token
+GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
+if not GITHUB_TOKEN:
+    raise ValueError("GITHUB_TOKEN is not set. Please configure your environment variables.")
 
 def gemini_chat(message, history):
+    """
+    Handles general chat messages with Gemini and updates the chat history.
+    """
+    gemini_history = [{"role": "user", "parts": [msg]} for msg, _ in history]
+    gemini_history.append({"role": "user", "parts": [message]})
+
     try:
-        response = genai.generate_text(prompt=message)
-        assistant_response = response.generations[0]["text"]
+        response = genai.GenerativeModel('gemini-pro').generate_content(gemini_history)
+        assistant_response = response.text
     except Exception as e:
         assistant_response = f"Error: {str(e)}"
+
     history.append((message, assistant_response))
     return history, history
 
-def analyze_github_and_ask(repo_url, question):
-    if not repo_url.startswith("https://github.com/"):
-        return "Invalid GitHub repository URL."
+def gemini_chat_with_context(context, question):
+    """
+    Combines context (GitHub data) with the user's question and generates a response.
+    """
+    gemini_history = [
+        {"role": "user", "parts": [f"Context: {context}"]},
+        {"role": "user", "parts": [question]}
+    ]
     try:
-        owner, repo = repo_url.split("https://github.com/")[1].split("/")[:2]
-        repo_api = f"https://api.github.com/repos/{owner}/{repo}"
-        headers = {"Authorization": f"token {GITHUB_TOKEN}"}
-        repo_resp = requests.get(repo_api, headers=headers)
-        lang_resp = requests.get(f"{repo_api}/languages", headers=headers)
-        if repo_resp.status_code != 200:
-            return f"Error: {repo_resp.status_code}"
-        repo_data = repo_resp.json()
-        languages = ', '.join(lang_resp.json().keys()) if lang_resp.status_code == 200 else "Unavailable"
-        context = f"Repo: {repo_data['html_url']}\nDescription: {repo_data['description']}\nLanguages: {languages}"
-        return gemini_chat_with_context(context, question)
+        response = genai.GenerativeModel('gemini-pro').generate_content(gemini_history)
+        return response.text
     except Exception as e:
         return f"Error: {str(e)}"
 
-if __name__ == "__main__":
-    with gr.Blocks() as demo:
-        with gr.Tab("Chat"):
-            chatbot = gr.Chatbot()
-            msg = gr.Textbox()
-            btn = gr.Button("Send")
-            history = gr.State([])
-            btn.click(gemini_chat, [msg, history], [chatbot, history])
-        with gr.Tab("GitHub"):
-            url = gr.Textbox()
-            qst = gr.Textbox()
-            out = gr.Textbox()
-            btn = gr.Button("Analyze")
-            btn.click(analyze_github_and_ask, [url, qst], out)
-    demo.launch()
+def analyze_github_and_ask(repo_url, question):
+    """
+    Fetches GitHub repository details and generates an answer using Gemini API.
+    """
+    if not repo_url.startswith("https://github.com/"):
+        return "Invalid GitHub repository URL."
 
+    try:
+        owner, repo_name = repo_url.split("https://github.com/")[1].split("/")[:2]
+    except ValueError:
+        return "Invalid GitHub repository URL structure."
+
+    github_api_url = f"https://api.github.com/repos/{owner}/{repo_name}"
+    headers = {"Authorization": f"token {GITHUB_TOKEN}"}
+
+    try:
+        response = requests.get(github_api_url, headers=headers)
+        if response.status_code != 200:
+            return f"Error: GitHub returned status code {response.status_code}."
+
+        repo_data = response.json()
+        description = repo_data.get("description", "No description provided.")
+        languages = repo_data.get("language", "Unknown")
+        context = f"GitHub Repository: {repo_url}\nDescription: {description}\nPrimary Language: {languages}"
+        return gemini_chat_with_context(context, question)
+    except Exception as e:
+        return f"Error accessing GitHub: {str(e)}"
